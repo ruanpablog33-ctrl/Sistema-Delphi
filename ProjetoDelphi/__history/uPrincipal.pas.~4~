@@ -1,0 +1,106 @@
+unit uPrincipal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TfrmPrincipal = class(TForm)
+    pnlMenu: TPanel;
+    pnlAreaTrabalho: TPanel;
+    btnLancamentos: TButton;
+    btnOrcamento: TButton;
+    btnSair: TButton;
+    procedure btnSairClick(Sender: TObject);
+    procedure btnLancamentosClick(Sender: TObject);
+    procedure btnOrcamentoClick(Sender: TObject);
+  private
+    { Private declarations }
+    // Procedimento genérico para abrir qualquer tela dentro do painel
+    procedure AbrirForm(AFormClass: TComponentClass; var AForm);
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPrincipal: TfrmPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+// Adicione as Units das telas que serão chamadas
+uses
+  UnitLancamentos, UnitOrcamento;
+
+{ TfrmPrincipal }
+
+procedure TfrmPrincipal.AbrirForm(AFormClass: TComponentClass; var AForm);
+begin
+  // Verifica se a variavel do form (ex: frmLancamentos) já tem algo criado
+  if Assigned(TForm(AForm)) then
+  begin
+    // Se já existe, apenas traz para frente e foca
+    TForm(AForm).BringToFront;
+    TForm(AForm).SetFocus;
+  end
+  else
+  begin
+    // Se não existe, cria o formulário
+    Application.CreateForm(AFormClass, AForm);
+
+    with TForm(AForm) do
+    begin
+      Parent := pnlAreaTrabalho; // Define o PAINEL BRANCO como "pai"
+      Align := alClient;         // Manda preencher todo o espaço do painel
+      BorderStyle := bsNone;     // Tira a borda e barra de título da janela filha
+      Show;                      // Mostra a tela
+    end;
+  end;
+end;
+
+procedure TfrmPrincipal.AbrirForm(AFormClass: TComponentClass; var AForm);
+begin
+  // 1. Verifica se a tela já está aberta
+  if Assigned(TForm(AForm)) then
+  begin
+    // Se existir, traz para frente e foca
+    TForm(AForm).BringToFront;
+    TForm(AForm).SetFocus;
+  end
+  else
+  begin
+    // 2. Se não existir, cria a tela
+    Application.CreateForm(AFormClass, AForm);
+
+    with TForm(AForm) do
+    begin
+      // Configurações para a tela se comportar como um painel filho
+      Parent := pnlAreaTrabalho; // Define quem é o "Pai" visual
+      Align := alClient;         // Preenche todo o espaço
+      BorderStyle := bsNone;     // Remove bordas e barra de título
+      Show;                      // Exibe a tela
+    end;
+  end;
+end;
+
+procedure TfrmPrincipal.btnLancamentosClick(Sender: TObject);
+begin
+  // Chama o método genérico passando a CLASSE e a VARIÁVEL do form
+  AbrirForm(TfrmLancamentos, frmLancamentos);
+end;
+
+procedure TfrmPrincipal.btnOrcamentoClick(Sender: TObject);
+begin
+  AbrirForm(TfrmOrcamento, frmOrcamento);
+end;
+
+procedure TfrmPrincipal.btnSairClick(Sender: TObject);
+begin
+  // Fecha o sistema todo
+  Application.Terminate;
+end;
+
+end.

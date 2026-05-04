@@ -1,0 +1,79 @@
+unit uLogin;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask;
+
+type
+  TfrmLogin = class(TForm)
+    lblTitulo: TLabel;
+    edtUsuario: TLabeledEdit;
+    edtSenha: TLabeledEdit;
+    btnEntrar: TButton;
+    btnSair: TButton;
+    procedure btnSairClick(Sender: TObject);
+    procedure btnEntrarClick(Sender: TObject);
+  private
+    { Private declarations }
+    function ValidarLogin: Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+{$R *.dfm}
+
+uses UnitLancamentos;
+
+// Função auxiliar para verificar as credenciais
+function TfrmLogin.ValidarLogin: Boolean;
+begin
+  // AQUI VOCÊ CONECTARÁ COM SEU BANCO DE DADOS FUTURAMENTE
+  // Por enquanto, vamos usar um usuário fixo para teste
+  if (edtUsuario.Text = 'admin') and (edtSenha.Text = '1234') then
+    Result := True
+  else
+    Result := False;
+end;
+
+procedure TfrmLogin.btnEntrarClick(Sender: TObject);
+begin
+  // 1. Validação básica de campos vazios
+  if (Trim(edtUsuario.Text) = '') or (Trim(edtSenha.Text) = '') then
+  begin
+    ShowMessage('Por favor, preencha usuário e senha.');
+    if edtUsuario.Text = '' then edtUsuario.SetFocus
+    else edtSenha.SetFocus;
+    Exit;
+  end;
+
+  // 2. Verifica credenciais
+  if ValidarLogin then
+  begin
+    // Define o resultado como OK para o formulário principal saber que deu certo
+    ModalResult := mrOk;
+  end
+  else
+  begin
+    ShowMessage('Usuário ou senha inválidos!');
+    edtSenha.Clear;
+    edtSenha.SetFocus;
+    // Garante que o formulário não feche se errar a senha
+    ModalResult := mrNone;
+  end;
+end;
+
+procedure TfrmLogin.btnSairClick(Sender: TObject);
+begin
+  // Fecha a aplicação
+  Application.Terminate;
+end;
+
+
+end.

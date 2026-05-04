@@ -1,0 +1,212 @@
+unit UnitLancamentos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.DBGrids, Vcl.ComCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+
+type
+  TfrmLancamentos = class(TForm)
+    pnlTopo: TPanel;
+    pnlInput: TPanel;
+    gridExtrato: TDBGrid;
+    lblResumoSaldo: TLabel;
+    lblResumoReceita: TLabel;
+    lblResumoDespesa: TLabel;
+    edtDescricao: TEdit;
+    edtValor1: TEdit;
+    dtpData: TDateTimePicker;
+    btnSalvar: TButton;
+    mtDados: TFDMemTable;
+    dsDados: TDataSource;
+    lblData: TLabel;
+    lblTipoInput: TLabel;
+    lblDescricao: TLabel;
+    lblValor: TLabel;
+    cboTipo: TComboBox;
+    procedure FormCreate(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure gridExtratoDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure pnlInputClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure ConfigurarTabelaMemoria;
+    procedure AtualizarTotais;
+    procedure LimparCampos;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLancamentos: TfrmLancamentos;
+
+implementation
+
+{$R *.dfm}
+
+uses uLogin, UnitOrcamento;
+
+{ TfrmLancamentos }
+
+procedure TfrmLancamentos.FormCreate(Sender: TObject);
+begin
+  // Configura visual inicial
+  pnlTopo.Color := clWhite;
+  pnlInput.Color := $00F9F9F9; // Cinza muito leve
+
+  // Prepara os dados na memória
+  ConfigurarTabelaMemoria;
+
+  // Configura inputs
+  cboTipo.Items.Add('Receita');
+  cboTipo.Items.Add('Despesa');
+  cboTipo.ItemIndex := 0;
+  dtpData.Date := Date;
+
+  AtualizarTotais;
+end;
+
+procedure TfrmLancamentos.ConfigurarTabelaMemoria;
+begin
+  // Cria a estrutura da tabela em memória (como se fosse um CREATE TABLE)
+  with mtDados do
+  begin
+    Close;
+    FieldDefs.Clear;
+    FieldDefs.Add('ID', ftAutoInc);
+    FieldDefs.Add('DATA', ftDate);
+    FieldDefs.Add('DESCRICAO', ftString, 100);
+    FieldDefs.Add('TIPO', ftString, 20); // 'Receita' ou 'Despesa'
+    FieldDefs.Add('VALOR', ftCurrency);
+    CreateDataSet; // Cria a tabela efetivamente na RAM
+    Open;
+  end;
+
+  // Formatação visual da coluna de valor na Grid
+  (mtDados.FieldByName('VALOR') as TCurrencyField).DisplayFormat := 'R$ #,##0.00';
+end;
+
+procedure TfrmLancamentos.btnSalvarClick(Sender: TObject);
+var
+  Valor: Currency;
+begin
+  // 1. Validação
+  if Trim(edtDescricao.Text) = '' then
+  begin
+    ShowMessage('Informe a descrição!');
+    edtDescricao.SetFocus;
+    Exit;
+  end;
+
+  if not TryStrToCurr(edtValor1.Text, Valor) then
+  begin
+    ShowMessage('Valor inválido!');
+    edtValor1.SetFocus;
+    Exit;
+  end;
+
+  // 2. Gravar no Banco de Memória (Insert)
+  mtDados.Append;
+  mtDados.FieldByName('DATA').AsDateTime := dtpData.Date;
+  mtDados.FieldByName('DESCRICAO').AsString := edtDescricao.Text;
+  mtDados.FieldByName('TIPO').AsString := cboTipo.Text;
+  mtDados.FieldByName('VALOR').AsCurrency := Valor;
+  mtDados.Post; // Salva
+
+  // 3. Finalização
+  LimparCampos;
+  AtualizarTotais;
+end;
+
+procedure TfrmLancamentos.btnExcluirClick(Sender: TObject);
+begin
+  if not mtDados.IsEmpty then
+  begin
+    mtDados.Delete;
+    AtualizarTotais;
+  end;
+end;
+
+procedure TfrmLancamentos.AtualizarTotais;
+var
+  TotalRec, TotalDesp: Currency;
+  Bookmark: TBookmark; // Para guardar a posição atual do cursor na grid
+begin
+  TotalRec := 0;
+  TotalDesp := 0;
+
+  mtDados.DisableControls; // Trava a grid para não piscar durante o loop
+  Bookmark := mtDados.GetBookmark; // Salva onde o usuário clicou
+  try
+    mtDados.First;
+    while not mtDados.Eof do
+    begin
+      if mtDados.FieldByName('TIPO').AsString = 'Receita' then
+        TotalRec := TotalRec + mtDados.FieldByName('VALOR').AsCurrency
+      else
+        TotalDesp := TotalDesp + mtDados.FieldByName('VALOR').AsCurrency;
+
+      mtDados.Next;
+    end;
+  finally
+    if mtDados.BookmarkValid(Bookmark) then
+      mtDados.GotoBookmark(Bookmark); // Volta para onde estava
+    mtDados.FreeBookmark(Bookmark);
+    mtDados.EnableControls;
+  end;
+
+  // Atualiza as Labels do Topo
+  lblResumoReceita.Caption := Format('Entradas: %m', [TotalRec]);
+  lblResumoReceita.Font.Color := $00008000; // Verde
+
+  lblResumoDespesa.Caption := Format('Saídas: %m', [TotalDesp]);
+  lblResumoDespesa.Font.Color := $000000CC; // Vermelho
+
+  lblResumoSaldo.Caption := Format('Saldo: %m', [TotalRec - TotalDesp]);
+  if (TotalRec - TotalDesp) >= 0 then
+    lblResumoSaldo.Font.Color := clBlue
+  else
+    lblResumoSaldo.Font.Color := clRed;
+end;
+
+procedure TfrmLancamentos.LimparCampos;
+begin
+  edtDescricao.Clear;
+  edtValor1.Clear;
+  dtpData.Date := Date;
+  edtDescricao.SetFocus;
+end;
+
+procedure TfrmLancamentos.pnlInputClick(Sender: TObject);
+begin
+
+end;
+
+// Evento para pintar o texto da Grid (Vermelho ou Verde)
+procedure TfrmLancamentos.gridExtratoDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  // Se a linha for do tipo Despesa, muda a cor da fonte
+  if mtDados.FieldByName('TIPO').AsString = 'Despesa' then
+    gridExtrato.Canvas.Font.Color := $000000CC // Vermelho escuro
+  else if mtDados.FieldByName('TIPO').AsString = 'Receita' then
+    gridExtrato.Canvas.Font.Color := $00008000; // Verde escuro
+
+  // Mantém a cor de seleção (azul) se a linha estiver selecionada
+  if gdSelected in State then
+  begin
+    gridExtrato.Canvas.Brush.Color := clHighlight;
+    gridExtrato.Canvas.Font.Color := clHighlightText;
+  end;
+
+  // Desenha o conteúdo padrão
+  gridExtrato.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+end;
+
+end.

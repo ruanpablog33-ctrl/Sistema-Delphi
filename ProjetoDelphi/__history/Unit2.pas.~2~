@@ -1,0 +1,125 @@
+unit Unit2;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls;
+
+type
+  TFormCadastroTransacao = class(TForm)
+    lblTitulo: TLabel;
+    edtDescricao: TEdit;
+    edtValor: TEdit;
+    dtpData: TDateTimePicker;
+    rgTipo: TRadioGroup;
+    cbCategoria: TComboBox;
+    cbPagamento: TComboBox;
+    btnSalvar: TButton;
+    btnCancelar: TButton;
+
+    // Eventos
+    procedure FormCreate(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure edtValorExit(Sender: TObject);
+    procedure edtValorKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+    function ValidarCampos: Boolean;
+    procedure LimparCampos;
+  public
+    { Public declarations }
+  end;
+
+var
+  FormCadastroTransacao: TFormCadastroTransacao;
+
+implementation
+
+{$R *.dfm}
+
+// Configuração Inicial
+procedure TFormCadastroTransacao.FormCreate(Sender: TObject);
+begin
+  self.Caption := 'Gestão Financeira';
+  self.Position := poScreenCenter;
+  dtpData.Date := Date; // Data atual
+  rgTipo.ItemIndex := 1; // Padrão: Despesa
+end;
+
+// Formata o valor para Moeda ao sair do campo
+procedure TFormCadastroTransacao.edtValorExit(Sender: TObject);
+var
+  Valor: Double;
+begin
+  if TryStrToFloat(StringReplace(edtValor.Text, 'R$', '', [rfReplaceAll]), Valor) then
+    edtValor.Text := FormatFloat('R$ #,##0.00', Valor)
+  else
+    edtValor.Text := '0,00';
+end;
+
+// Permite apenas números e vírgula no campo de valor
+procedure TFormCadastroTransacao.edtValorKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (Key in ['0'..'9', ',', #8]) then
+    Key := #0;
+end;
+
+// Lógica do Botão Salvar
+procedure TFormCadastroTransacao.btnSalvarClick(Sender: TObject);
+var
+  Msg: string;
+begin
+  if not ValidarCampos then Exit;
+
+  // AQUI VOCÊ INSERIRIA O CÓDIGO DE BANCO DE DADOS (INSERT INTO...)
+  // Exemplo visual apenas:
+  Msg := 'Transação Salva!' + sLineBreak +
+         'Descrição: ' + edtDescricao.Text + sLineBreak +
+         'Valor: ' + edtValor.Text + sLineBreak +
+         'Tipo: ' + rgTipo.Items[rgTipo.ItemIndex];
+
+  ShowMessage(Msg);
+
+  // Após salvar, limpar para o próximo
+  LimparCampos;
+  edtDescricao.SetFocus;
+end;
+
+procedure TFormCadastroTransacao.btnCancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+// Funções Auxiliares
+function TFormCadastroTransacao.ValidarCampos: Boolean;
+begin
+  Result := False;
+  if Trim(edtDescricao.Text) = '' then
+  begin
+    ShowMessage('Por favor, informe uma descrição.');
+    edtDescricao.SetFocus;
+    Exit;
+  end;
+
+  if (Trim(edtValor.Text) = '') or (edtValor.Text = '0,00') then
+  begin
+    ShowMessage('Por favor, informe um valor válido.');
+    edtValor.SetFocus;
+    Exit;
+  end;
+
+  Result := True;
+end;
+
+procedure TFormCadastroTransacao.LimparCampos;
+begin
+  edtDescricao.Clear;
+  edtValor.Clear;
+  dtpData.Date := Date;
+  cbCategoria.ItemIndex := -1;
+  cbPagamento.ItemIndex := -1;
+end;
+
+end.

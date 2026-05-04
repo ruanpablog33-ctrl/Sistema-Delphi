@@ -1,0 +1,32 @@
+unit UnitOrcamento;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TfrmOrcamento = class(TForm)
+    pnlTopo: TPanel;
+    Label1: TLabel;
+    cboMes: TComboBox;
+    pnlInput: TPanel;
+    cboCategoria: TComboBox;
+    edtValorMeta: TEdit;
+    btnAdicionarMeta: TButton;
+    ScrollBox1: TScrollBox;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmOrcamento: TfrmOrcamento;
+
+implementation
+
+{$R *.dfm}
+
+end.

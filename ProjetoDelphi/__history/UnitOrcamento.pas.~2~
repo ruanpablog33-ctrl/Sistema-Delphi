@@ -1,0 +1,150 @@
+unit UnitOrcamento;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
+  FireDAC.Stan.Intf, FireDAC.Comp.Client, FireDAC.Comp.DataSet;
+  // Adicione Math para cálculos
+
+type
+  TfrmOrcamento = class(TForm)
+    pnlTopo: TPanel;
+    lblTitulo: TLabel;
+    cboMes: TComboBox;
+    pnlInput: TPanel;
+    lblCat: TLabel;
+    cboCategoria: TComboBox;
+    lblMeta: TLabel;
+    edtValorMeta: TEdit;
+    btnDefinir: TButton;
+    scrollBoxMetas: TScrollBox; // Arraste um TScrollBox para o centro
+    procedure FormCreate(Sender: TObject);
+    procedure btnDefinirClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CriarCardMeta(Categoria: string; ValorMeta, ValorGasto: Currency);
+    procedure LimparInput;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmOrcamento: TfrmOrcamento;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmOrcamento.FormCreate(Sender: TObject);
+begin
+  // Configurações visuais
+  pnlTopo.Color := clWhite;
+  pnlInput.Color := $00F9F9F9;
+  scrollBoxMetas.Color := clWhite;
+
+  // Dados simulados
+  cboCategoria.Items.Add('Alimentação');
+  cboCategoria.Items.Add('Transporte');
+  cboCategoria.Items.Add('Lazer');
+  cboCategoria.Items.Add('Educação');
+
+  // Vamos simular que já existem dados carregados
+  // (Num sistema real, isso viria do banco de dados com um SELECT SUM)
+  CriarCardMeta('Alimentação', 1000, 450);  // Meta 1000, Gastou 450
+  CriarCardMeta('Transporte', 300, 280);    // Quase estourando
+  CriarCardMeta('Lazer', 200, 250);         // Estourou!
+end;
+
+// Esta é a mágica: Criar visualmente o controle de orçamento
+procedure TfrmOrcamento.CriarCardMeta(Categoria: string; ValorMeta, ValorGasto: Currency);
+var
+  pnlCard: TPanel;
+  lblNome, lblValores: TLabel;
+  progresso: TProgressBar;
+  Percentual: Integer;
+begin
+  // 1. Cria o container do card (uma faixa horizontal)
+  pnlCard := TPanel.Create(scrollBoxMetas);
+  pnlCard.Parent := scrollBoxMetas;
+  pnlCard.Align := alTop;
+  pnlCard.Height := 70;
+  pnlCard.BevelOuter := bvNone;
+  pnlCard.Color := clWhite;
+  pnlCard.Margins.SetBounds(10, 5, 10, 5); // Espaçamento entre cards
+  pnlCard.AlignWithMargins := True;
+
+  // Borda inferior para separar (opcional, desenha uma linha)
+  // No Delphi simples, podemos usar outro panel fininho ou shape,
+  // mas aqui vamos confiar no espaço em branco.
+
+  // 2. Título da Categoria
+  lblNome := TLabel.Create(pnlCard);
+  lblNome.Parent := pnlCard;
+  lblNome.Caption := Categoria;
+  lblNome.Font.Size := 12;
+  lblNome.Font.Style := [fsBold];
+  lblNome.Left := 10;
+  lblNome.Top := 10;
+
+  // 3. Texto de Valores (Ex: "R$ 450,00 de R$ 1.000,00")
+  lblValores := TLabel.Create(pnlCard);
+  lblValores.Parent := pnlCard;
+  lblValores.Caption := Format('%m de %m', [ValorGasto, ValorMeta]);
+  lblValores.Font.Color := $00666666;
+  lblValores.Left := 10;
+  lblValores.Top := 30;
+
+  // 4. Barra de Progresso Visual
+  progresso := TProgressBar.Create(pnlCard);
+  progresso.Parent := pnlCard;
+  progresso.Left := 10;
+  progresso.Top := 50;
+  progresso.Width := pnlCard.Width - 40; // Ocupa quase tudo
+  progresso.Height := 10;
+  progresso.Anchors := [akLeft, akTop, akRight]; // Estica se redimensionar
+
+  // Cálculo da porcentagem
+  if ValorMeta > 0 then
+    Percentual := Trunc((ValorGasto / ValorMeta) * 100)
+  else
+    Percentual := 100;
+
+  // Limita a 100 visualmente para não dar erro no componente padrão
+  if Percentual > 100 then progresso.Position := 100
+  else progresso.Position := Percentual;
+
+  // Lógica de Cores (Truque: mudar a cor da fonte ou ícone,
+  // pois TProgressBar padrão do Windows é verde/azul dependendo do tema)
+  if Percentual >= 100 then
+  begin
+    lblValores.Font.Color := clRed;
+    lblValores.Caption := lblValores.Caption + ' (ESTOURADO!)';
+  end
+  else if Percentual > 80 then
+    lblValores.Font.Color := $000080FF; // Laranja (Alerta)
+end;
+
+procedure TfrmOrcamento.btnDefinirClick(Sender: TObject);
+var
+  Meta: Currency;
+begin
+  if (cboCategoria.Text = '') or (edtValorMeta.Text = '') then
+    Exit;
+
+  if TryStrToCurr(edtValorMeta.Text, Meta) then
+  begin
+    // Adiciona visualmente (assume 0 gasto pois acabou de criar)
+    CriarCardMeta(cboCategoria.Text, Meta, 0);
+    LimparInput;
+  end;
+end;
+
+procedure TfrmOrcamento.LimparInput;
+begin
+  edtValorMeta.Clear;
+  cboCategoria.ItemIndex := -1;
+end;
+
+end.

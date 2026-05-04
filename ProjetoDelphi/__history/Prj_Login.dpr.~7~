@@ -1,0 +1,42 @@
+program Prj_Login;
+
+uses
+  Vcl.Forms,
+  UnitLancamentos in 'UnitLancamentos.pas' {frmLancamentos},
+  UnitOrcamento in 'UnitOrcamento.pas' {frmOrcamento},
+  Vcl.Controls,
+  uLogin in 'uLogin.pas' {frmLogin},
+  uPrincipal in 'uPrincipal.pas' {frmPrincipal};
+
+// Seu formulário de login
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+
+  // Cria o formulário de login (mas não o exibe ainda)
+  frmLogin := TfrmLogin.Create(nil);
+  try
+    // Exibe o login. O código para aqui até o usuário clicar ou fechar.
+    // Se o usuário clicou em "Entrar" e o ModalResult foi mrOk:
+    if frmLogin.ShowModal = mrOk then
+    begin
+      // Cria o formulário principal e roda a aplicação
+  Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmLancamentos, frmLancamentos);
+  Application.CreateForm(TfrmOrcamento, frmOrcamento);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.Run;
+    end
+    else
+    begin
+      // Se o usuário fechou ou cancelou, a aplicação morre aqui.
+      Application.Terminate;
+    end;
+  finally
+    // Libera o formulário de login da memória
+    frmLogin.Free;
+  end;
+end.

@@ -1,0 +1,84 @@
+object frmLogin: TfrmLogin
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'Acesso - Minhas Finan'#231'as'
+  ClientHeight = 441
+  ClientWidth = 624
+  Color = clActiveCaption
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  TextHeight = 15
+  object pnlCard: TPanel
+    Left = 136
+    Top = 40
+    Width = 345
+    Height = 361
+    Align = alCustom
+    BevelOuter = bvNone
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 0
+    object lblTitulo: TLabel
+      Left = 98
+      Top = 32
+      Width = 153
+      Height = 25
+      Caption = 'Login do Sistema'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edtUsuario: TLabeledEdit
+      Left = 34
+      Top = 114
+      Width = 271
+      Height = 23
+      EditLabel.Width = 43
+      EditLabel.Height = 15
+      EditLabel.Caption = 'Usu'#225'rio:'
+      TabOrder = 0
+      Text = ''
+    end
+    object edtSenha: TLabeledEdit
+      Left = 34
+      Top = 176
+      Width = 271
+      Height = 23
+      EditLabel.Width = 35
+      EditLabel.Height = 15
+      EditLabel.Caption = 'Senha:'
+      PasswordChar = '*'
+      TabOrder = 1
+      Text = ''
+    end
+    object btnEntrar: TButton
+      Left = 34
+      Top = 224
+      Width = 271
+      Height = 57
+      Cursor = crHandPoint
+      Caption = 'Entrar'
+      Default = True
+      TabOrder = 2
+    end
+    object btnSair: TButton
+      Left = 34
+      Top = 287
+      Width = 271
+      Height = 25
+      Cursor = crHandPoint
+      Cancel = True
+      Caption = 'Sair'
+      TabOrder = 3
+      OnClick = btnSairClick
+    end
+  end
+end

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2025/12/05 17:10:59.000.275,=C:\Users\barra\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/12/05 17:32:00.000.405,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uLogin.pas=C:\Users\barra\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/12/05 17:32:00.000.405,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uLogin.dfm=C:\Users\barra\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
+    <Transaction>2025/12/05 17:32:18.000.390,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Prj_Login.dproj=C:\Users\barra\OneDrive\Documentos\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>2025/12/05 17:48:07.000.175,=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/05 18:02:35.000.256,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\UnitLancamentos.dfm=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.dfm</Transaction>
+    <Transaction>2025/12/05 18:02:35.000.256,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\UnitLancamentos.pas=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/05 18:29:24.000.337,=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/05 18:40:24.000.142,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\UnitOrcamento.dfm=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.dfm</Transaction>
+    <Transaction>2025/12/05 18:40:24.000.142,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\UnitOrcamento.pas=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/05 20:17:08.000.757,=C:\Users\estudante\Documents\ProjetoDelphi\ModelSupport_Prj_Login\default.txaPackage</Transaction>
+    <Transaction>2025/12/09 15:04:03.731,=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/09 15:05:24.875,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uPrincipal.pas=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/09 15:05:24.875,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uPrincipal.dfm=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.dfm</Transaction>
+    <Transaction>2025/12/09 15:55:43.949,=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+    <Transaction>2025/12/09 15:56:49.146,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uDM.dfm=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.dfm</Transaction>
+    <Transaction>2025/12/09 15:56:49.146,C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\uDM.pas=C:\Users\barra\OneDrive\Desktop\ProjetoDelphi\Unit1.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="ModelSupport_Prj_Login"/>
+    <File Path="ModelSupport_Prj_Login\default.txaPackage"/>
+    <File Path="uLogin.pas"/>
+    <File Path="uLogin.dfm"/>
+    <File Path="UnitLancamentos.pas"/>
+    <File Path="UnitLancamentos.dfm"/>
+    <File Path="UnitOrcamento.pas"/>
+    <File Path="UnitOrcamento.dfm"/>
+    <File Path="uPrincipal.pas"/>
+    <File Path="uPrincipal.dfm"/>
+    <File Path="uDM.pas"/>
+    <File Path="uDM.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>
