@@ -28,4 +28,4 @@ Antes de executar o projeto, você precisará ter instalado em sua máquina:
 
 1. **Clone este repositório:**
    ```bash
-   git clone [https://github.com/ruanpablog3/Sistema-Delphigit](https://github.com/ruanpablog3/Sistems-Delphi.git)
+   git clone [https://github.com/ruanpablog3/Sistema-Delphigit](https://github.com/ruanpablog3/Sistema-Delphi.git)
